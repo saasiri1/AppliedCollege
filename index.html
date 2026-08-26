@@ -102,7 +102,7 @@
 
   /* سطر (وحدة التدريب) بموضع سطر القالب الأصلي */
   .vp{
-    position:absolute;top:35.66mm;right:16.9mm;white-space:nowrap;
+    position:absolute;top:35.66mm;right:16.9mm;transform:translateX(2ch);white-space:nowrap;
     color:#184388;font-weight:700;font-size:11pt;line-height:1;
     font-family:"Bahij TheSansArabic SemiBold","Bahij TheSansArabic Plain","Dubai","Segoe UI",Tahoma,Arial,sans-serif;
   }
@@ -117,6 +117,7 @@
   .content p.tight{margin-bottom:3mm}
   .content .indent{text-indent:8mm}
   #p_org{display:flex;justify-content:space-between;align-items:baseline;gap:12mm}
+  #p_org.generic{justify-content:center;text-align:center;font-size:1.25em}
   #p_org > span:first-child{font-weight:700}
   .hon{font-weight:700;font-size:1.18em;white-space:nowrap;margin-inline-end:20mm}
 
@@ -128,15 +129,18 @@
   .info .mail{direction:ltr;unicode-bidi:isolate;display:inline-block}
   .tail{font-size:.96em}
   .ack{font-size:.85em;font-weight:700;color:#c00000;margin:4mm 0 0;text-align:justify}
-  .ack input{width:1em;height:1em;margin:0 0 0 .45em;vertical-align:-.12em;accent-color:#c00000;pointer-events:none}
+  .ack-title{display:block;margin-bottom:1mm}
+  .ack-line{display:flex;align-items:flex-start;gap:.45em}
+  .ack-box{display:inline-flex;width:1em;height:1em;margin-top:.22em;flex:none;align-items:center;justify-content:center;border:1.5px solid currentColor;background:transparent}
+  .ack-box::after{content:"✓";font-size:.85em;line-height:1;font-weight:700}
 
   /* خانة توقيع وحدة التدريب */
   .sign{
-    margin-top:auto;align-self:flex-end;width:74mm;
+    margin-top:auto;align-self:flex-end;width:max-content;max-width:100%;
     padding:0 2mm;text-align:center;
     font-size:1.05em;line-height:1.7
   }
-  .sign .t{font-weight:700}
+  .sign .t{font-weight:700;white-space:nowrap}
   .sign .m{font-weight:700;margin-top:2mm;direction:ltr;unicode-bidi:isolate}
 
   /* ===== الطباعة ===== */
@@ -175,7 +179,7 @@
       <div class="row">
         <div>
           <label for="sid">الرقم الجامعي <span class="req">*</span></label>
-          <input type="text" id="sid" inputmode="numeric" maxlength="9" placeholder="مثال: 440000000">
+          <input type="text" id="sid" inputmode="numeric" minlength="9" maxlength="9" pattern="[0-9]{9}" placeholder="مثال: 440000000">
         </div>
         <div>
           <label for="sec">رقم الشعبة <span class="req">*</span></label>
@@ -249,7 +253,7 @@
   <div class="stagewrap" id="stagewrap">
     <div class="stage" id="stage">
       <div class="page" id="page">
-        <div class="vp">وحدة التدريب</div>
+        <div class="vp">وحدة التدريب والشهادات الإحترافية</div>
 
         <div class="content" id="content">
           <p class="tight" id="p_org"></p>
@@ -260,7 +264,8 @@
           <div class="tablewrap">
             <table>
               <tr class="info">
-                <td id="v_name" colspan="3"></td>
+                <td id="v_name" colspan="2"></td>
+                <td id="v_mobile"></td>
               </tr>
               <tr class="info">
                 <td id="v_college"></td>
@@ -268,7 +273,7 @@
                 <td id="v_sid"></td>
               </tr>
               <tr class="info">
-                <td id="v_mobile"></td>
+                <td><b>اسم المقرر:</b> التدريب الميداني</td>
                 <td id="v_sec" colspan="2"></td>
               </tr>
               <tr class="info">
@@ -279,10 +284,13 @@
 
           <p id="p2"></p>
 
-          <p class="ack" id="p_ack">
-            <input type="checkbox" tabindex="-1" aria-hidden="true">
-            <span id="p_ack_text"></span>
-          </p>
+          <div class="ack" id="p_ack">
+            <span class="ack-title" id="p_ack_title"></span>
+            <span class="ack-line">
+              <span class="ack-box" aria-hidden="true"></span>
+              <span id="p_ack_text"></span>
+            </span>
+          </div>
 
           <div class="sign">
             <div class="t">وحدة التدريب والشهادات الإحترافية بالكلية التطبيقية</div>
@@ -358,9 +366,11 @@
     $('p_org').innerHTML = org
       ? '<span>السـادة/ ' + escapeHtml(org) + '</span><span class="hon">المحترمين</span>'
       : '<span>إلى من يهمه الأمر</span>';
+    $('p_org').classList.toggle('generic', !org);
 
+    $('p_ack_title').textContent = 'إقرار ' + w + ':';
     $('p_ack_text').textContent =
-      'إقرار ' + w + ': أقر بأن مقرر التدريب الميداني مسجل في جدولي الدراسي، وأن جميع البيانات والمعلومات الواردة في هذا الخطاب صحيحة، وأتحمل كامل المسؤولية عن أي بيانات أو معلومات غير صحيحة.';
+      'أقر بأن مقرر التدريب الميداني مسجل في جدولي الدراسي، وأن جميع البيانات والمعلومات الواردة في هذا الخطاب صحيحة، وأتحمل كامل المسؤولية عن أي بيانات أو معلومات غير صحيحة.';
 
     $('p2').textContent =
       'وذلك اعتباراً من بداية ' + TERM_LONG + ' وحتى نهاية الفصل بتاريخ ' + END + '، وبما يتناسب مع إمكانياتكم ' +
@@ -414,7 +424,7 @@
     {id:'name',   label:'اسم الطالب',
      test:function(v){ var n = v.split(/\s+/).filter(Boolean).length; return n >= 2 && n <= 5; },
       msg:'الاسم الرباعي'},
-    {id:'sid',    label:'الرقم الجامعي', test:function(v){ return /^44[0-9]{1,7}$/.test(v); }, msg:'يبدأ بـ 44 ولا يتجاوز 9 أرقام'},
+    {id:'sid',    label:'الرقم الجامعي', test:function(v){ return /^44[0-9]{7}$/.test(v); }, msg:'يجب أن يتكون من 9 أرقام ويبدأ بـ 44'},
     {id:'sec',    label:'رقم الشعبة',    test:function(v){ return /^[0-9]{1,8}$/.test(v); },  msg:'أرقام فقط'},
     {id:'college', label:'الكلية'},
     {id:'major',  label:'التخصص'},
@@ -455,7 +465,8 @@
   var DIGITS = {sid:9, sec:8, mobile:10};
   Object.keys(DIGITS).forEach(function(id){
     $(id).addEventListener('input', function(){
-      var clean = this.value.replace(/[^0-9]/g, '').slice(0, DIGITS[id]);
+      var clean = this.value.replace(/[^0-9]/g, '');
+      if (DIGITS[id]) clean = clean.slice(0, DIGITS[id]);
       if (clean !== this.value){
         var atEnd = this.selectionStart === this.value.length;
         this.value = clean;
