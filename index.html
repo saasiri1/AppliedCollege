@@ -123,13 +123,12 @@
   .tablewrap{padding-bottom:4mm}
   table{width:100%;border-collapse:collapse;font-size:.93em}
   td{border:1px solid #000;padding:2.6mm 3mm;line-height:1.5;text-align:center}
-  .head td{font-weight:700}
-  .vals td{height:12mm;vertical-align:middle}
   .info td{text-align:right;white-space:nowrap}
   .info b{font-weight:700}
   .info .mail{direction:ltr;unicode-bidi:isolate;display:inline-block}
   .tail{font-size:.96em}
   .ack{font-size:.85em;font-weight:700;color:#c00000;margin:4mm 0 0;text-align:justify}
+  .ack input{width:1em;height:1em;margin:0 0 0 .45em;vertical-align:-.12em;accent-color:#c00000;pointer-events:none}
 
   /* خانة توقيع وحدة التدريب */
   .sign{
@@ -163,7 +162,7 @@
   <!-- ======= نموذج الإدخال ======= -->
   <form class="panel noprint" id="f" autocomplete="off">
     <h1>خطاب التدريب التعاوني</h1>
-    <p class="sub">الكلية التطبيقية – جامعة الملك خالد. عبِّئ بيانات الطالب ثم اضغط «توليد PDF».</p>
+    <p class="sub">الكلية التطبيقية – جامعة الملك خالد. أدخل بيانات الطالب ثم اضغط «توليد PDF».</p>
 
     <fieldset>
       <legend>بيانات الطالب</legend>
@@ -171,7 +170,7 @@
       <input type="text" id="org" placeholder="مثال: شركة النموذج للتجارة" maxlength="100">
 
       <label for="name">اسم الطالب / ـة <span class="req">*</span></label>
-      <input type="text" id="name" placeholder="مثال: محمد أحمد" maxlength="50">
+      <input type="text" id="name" placeholder="مثال: محمد أحمد" maxlength="40">
 
       <div class="row">
         <div>
@@ -260,33 +259,33 @@
 
           <div class="tablewrap">
             <table>
-              <tr class="head">
-                <td>الاسم</td>
-                <td>الرقم الجامعي</td>
-                <td>التخصص</td>
+              <tr class="info">
+                <td id="v_name" colspan="3"></td>
               </tr>
-              <tr class="vals">
-                <td id="v_name">&nbsp;</td>
-                <td id="v_sid">&nbsp;</td>
-                <td id="v_major">&nbsp;</td>
+              <tr class="info">
+                <td id="v_college"></td>
+                <td id="v_major"></td>
+                <td id="v_sid"></td>
               </tr>
               <tr class="info">
                 <td id="v_mobile"></td>
-                <td id="v_sec"></td>
-                <td id="v_email"></td>
+                <td id="v_sec" colspan="2"></td>
               </tr>
               <tr class="info">
-                <td id="v_college" colspan="3"></td>
+                <td id="v_email" colspan="3"></td>
               </tr>
             </table>
           </div>
 
           <p id="p2"></p>
 
-          <p class="ack" id="p_ack"></p>
+          <p class="ack" id="p_ack">
+            <input type="checkbox" tabindex="-1" aria-hidden="true">
+            <span id="p_ack_text"></span>
+          </p>
 
           <div class="sign">
-            <div class="t">وحدة التدريب بالكلية التطبيقية</div>
+            <div class="t">وحدة التدريب والشهادات الإحترافية بالكلية التطبيقية</div>
             <div class="m">TPCU@kku.edu.sa</div>
           </div>
         </div>
@@ -325,8 +324,6 @@
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
     });
   }
-  function put(id, v){ $(id).innerHTML = v ? escapeHtml(v) : '&nbsp;'; }
-
   function autofit(){
     var c = $('content'), size = 14;
     c.style.fontSize = size + 'pt';
@@ -347,9 +344,9 @@
       'التعاوني الذي يمثل جزءاً أساسياً من الخطة الدراسية لطلاب وطالبات الكلية التطبيقية لصقل المهارات ' +
       'وتطبيق المعارف النظرية. لذا نأمل تعاونكم معنا بالمشاركة في تدريب ' + w + ':';
 
-    put('v_name',  val('name'));
-    put('v_sid',   val('sid'));
-    put('v_major', val('major'));
+    $('v_name').innerHTML  = '<b>الاسم:</b> ' + escapeHtml(val('name'));
+    $('v_sid').innerHTML   = '<b>الرقم الجامعي:</b> ' + escapeHtml(val('sid'));
+    $('v_major').innerHTML = '<b>التخصص:</b> ' + escapeHtml(val('major'));
 
     $('v_mobile').innerHTML = '<b>الجوال:</b> ' + escapeHtml(val('mobile'));
     $('v_sec').innerHTML    = '<b>رقم الشعبة:</b> ' + escapeHtml(val('sec'));
@@ -360,14 +357,14 @@
     var org = val('org');
     $('p_org').innerHTML = org
       ? '<span>السـادة/ ' + escapeHtml(org) + '</span><span class="hon">المحترمين</span>'
-      : '<span>السـادة/ إلى من يهمه الأمر</span>';
+      : '<span>إلى من يهمه الأمر</span>';
 
-    $('p_ack').textContent =
+    $('p_ack_text').textContent =
       'إقرار ' + w + ': أقر بأن مقرر التدريب الميداني مسجل في جدولي الدراسي، وأن جميع البيانات والمعلومات الواردة في هذا الخطاب صحيحة، وأتحمل كامل المسؤولية عن أي بيانات أو معلومات غير صحيحة.';
 
     $('p2').textContent =
       'وذلك اعتباراً من بداية ' + TERM_LONG + ' وحتى نهاية الفصل بتاريخ ' + END + '، وبما يتناسب مع إمكانياتكم ' +
-      'والتخصصات المتوفرة لديكم، كما نود من سعادتكم إشعارنا في حال قبول ' + w + ' للتدريب لديكم. ' +
+      'والتخصصات المتوفرة لديكم. ' +
       'شاكرين لكم كريم تعاونكم في تدريب طلاب وطالبات الكلية ومتطلعين إلى دوام التواصل والتعاون بما ' +
       'يخدم المصلحة التعليمية ويحقق أهدافها.';
 
@@ -416,7 +413,7 @@
   var RULES = [
     {id:'name',   label:'اسم الطالب',
      test:function(v){ var n = v.split(/\s+/).filter(Boolean).length; return n >= 2 && n <= 5; },
-     msg:'من اسمين إلى خمسة أسماء'},
+      msg:'الاسم الرباعي'},
     {id:'sid',    label:'الرقم الجامعي', test:function(v){ return /^44[0-9]{1,7}$/.test(v); }, msg:'يبدأ بـ 44 ولا يتجاوز 9 أرقام'},
     {id:'sec',    label:'رقم الشعبة',    test:function(v){ return /^[0-9]{1,8}$/.test(v); },  msg:'أرقام فقط'},
     {id:'college', label:'الكلية'},
