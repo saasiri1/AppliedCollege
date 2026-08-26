@@ -65,11 +65,18 @@
     border-radius:8px;padding:9px 11px;font-size:12.5px;line-height:1.8;margin:0 0 10px
   }
   .errbox.show{display:block}
-  .fixed{list-style:none;margin:0;padding:0;font-size:13px;line-height:2}
-  .fixed li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:2px 0}
+  .check{
+    display:flex;gap:9px;align-items:flex-start;margin-top:12px;padding:10px 11px;
+    border:1px solid var(--line);border-radius:8px;background:#fafbfc;
+    font-size:12.5px;line-height:1.85;color:var(--ink);cursor:pointer;text-align:justify
+  }
+  .check.err{border-color:#c0392b;background:#fff7f6}
+  .check input{width:16px;height:16px;margin:3px 0 0;flex:none;accent-color:var(--brand)}
+  .fixed{list-style:none;margin:0;padding:0;direction:rtl;text-align:right}
+  .fixed li{border-bottom:1px dashed var(--line);padding:5px 0}
   .fixed li:last-child{border-bottom:0}
-  .fixed span{color:var(--muted)}
-  .fixed b{font-weight:700}
+  .fixed span{display:block;font-size:11.5px;color:var(--muted);line-height:1.5}
+  .fixed b{display:block;font-size:13px;font-weight:700;line-height:1.7;word-break:break-word}
   .actions{position:sticky;bottom:0;background:linear-gradient(to top,#fff 70%,rgba(255,255,255,0));padding:14px 0 4px}
   button{
     width:100%;padding:12px;border:0;border-radius:10px;background:var(--brand);color:#fff;
@@ -109,6 +116,8 @@
   .content p{margin:0 0 4.5mm}
   .content p.tight{margin-bottom:3mm}
   .content .indent{text-indent:8mm}
+  #p_org{display:flex;justify-content:space-between;align-items:baseline;gap:12mm}
+  .hon{font-weight:700;font-size:1.18em;white-space:nowrap;margin-inline-end:20mm}
 
   .tablewrap{padding-bottom:4mm}
   table{width:100%;border-collapse:collapse;font-size:.93em}
@@ -119,15 +128,16 @@
   .info b{font-weight:700}
   .info .mail{direction:ltr;unicode-bidi:isolate;display:inline-block}
   .tail{font-size:.96em}
-  .ack{font-size:.92em;border:1px solid #000;padding:2.5mm 3mm;margin:3mm 0 0;text-align:justify}
+  .ack{font-size:1.02em;font-weight:700;margin:4mm 0 0;text-align:justify}
 
   /* خانة توقيع وحدة التدريب */
   .sign{
-    margin-top:auto;align-self:flex-end;width:70mm;
-    border:1px solid #000;padding:3mm 4mm 2.5mm;text-align:center;
-    font-size:.89em;line-height:1.7
+    margin-top:auto;align-self:flex-end;width:74mm;
+    padding:0 2mm;text-align:center;
+    font-size:1.05em;line-height:1.7
   }
-  .sign .t{font-weight:700;margin-bottom:12mm}
+  .sign .t{font-weight:700}
+  .sign .m{font-weight:700;margin-top:2mm;direction:ltr;unicode-bidi:isolate}
 
   /* ===== الطباعة ===== */
   @page{size:A4 portrait;margin:0}
@@ -156,20 +166,20 @@
 
     <fieldset>
       <legend>بيانات الطالب</legend>
-      <label for="org">اسم المؤسسة / الجهة <span style="color:var(--muted)">(اختياري)</span></label>
-      <input type="text" id="org" placeholder="إن تُرك فارغاً: إلى من يهمه الأمر">
+      <label for="org">اسم المؤسسة / الجهة <span style="color:var(--muted)">(اختياري — الافتراضي: إلى من يهمه الأمر)</span></label>
+      <input type="text" id="org" placeholder="مثال: شركة النموذج للتجارة">
 
       <label for="name">اسم الطالب / ـة <span class="req">*</span></label>
-      <input type="text" id="name" placeholder="مثال: محمد موسى">
+      <input type="text" id="name" placeholder="مثال: محمد أحمد">
 
       <div class="row">
         <div>
           <label for="sid">الرقم الجامعي <span class="req">*</span></label>
-          <input type="text" id="sid" inputmode="numeric" placeholder="441000000">
+          <input type="text" id="sid" inputmode="numeric" maxlength="9" placeholder="مثال: 440000000">
         </div>
         <div>
           <label for="sec">رقم الشعبة <span class="req">*</span></label>
-          <input type="text" id="sec" inputmode="numeric" placeholder="مثال: 1234">
+          <input type="text" id="sec" inputmode="numeric" maxlength="8" placeholder="مثال: 0000">
         </div>
       </div>
 
@@ -195,7 +205,7 @@
       </select>
 
       <label for="mobile">رقم الجوال <span class="req">*</span></label>
-      <input type="text" id="mobile" inputmode="tel" placeholder="0555555555">
+      <input type="text" id="mobile" inputmode="tel" maxlength="10" placeholder="مثال: 0500000000">
 
       <p class="auto">البريد الإلكتروني (يُبنى تلقائياً): <b id="emailPreview">—</b></p>
 
@@ -211,8 +221,17 @@
       <legend>بيانات التدريب (ثابتة)</legend>
       <ul class="fixed">
         <li><span>الفصل الدراسي</span><b>الفصل الأول 1447</b></li>
-        <li><span>فترة التدريب</span><b>من بداية الفصل إلى 8-7-1447</b></li>
+        <li><span>فترة التدريب</span><b>من بداية الفصل إلى 8 رجب 1448</b></li>
       </ul>
+    </fieldset>
+
+    <fieldset>
+      <legend>إقرار الطالب</legend>
+      <label class="check" id="ackWrap" for="ackChk">
+        <input type="checkbox" id="ackChk">
+        <span>أقر بأن مقرر التدريب الميداني مسجل في جدولي الدراسي، وأن جميع المعلومات المدخلة أعلاه صحيحة،
+        وأتحمل كامل المسؤولية عن صحة البيانات عند إصدار وتحميل خطاب التدريب.</span>
+      </label>
     </fieldset>
 
     <div class="actions">
@@ -263,12 +282,11 @@
 
           <p id="p2"></p>
 
-          <p class="tail tight">الفصل الدراسي: الفصل الأول 1447</p>
-
           <p class="ack" id="p_ack"></p>
 
           <div class="sign">
             <div class="t">وحدة التدريب بالكلية التطبيقية</div>
+            <div class="m">TPCU@kku.edu.sa</div>
           </div>
         </div>
       </div>
@@ -286,8 +304,7 @@
   /* بيانات التدريب الثابتة */
   var TERM      = 'الفصل الأول 1447';
   var TERM_LONG = 'الفصل الدراسي الأول 1447';
-  /* ⁦ ... ⁩ لعزل اتجاه التاريخ حتى لا ينقلب داخل النص العربي */
-  var END       = '⁦' + '8-7-1447' + '⁩';
+  var END       = '8 رجب 1448';
 
   function gender(){
     var r = document.querySelector('input[name=g]:checked');
@@ -340,20 +357,19 @@
     $('emailPreview').textContent = email() || '—';
 
     var org = val('org');
-    $('p_org').textContent = 'السـادة/ ' + (org ? org + ' المحترمين' : 'إلى من يهمه الأمر');
+    $('p_org').innerHTML = org
+      ? '<span>السـادة/ ' + escapeHtml(org) + '</span><span class="hon">المحترمين</span>'
+      : '<span>السـادة/ إلى من يهمه الأمر</span>';
 
     $('p_ack').textContent =
       'إقرار ' + w + ': أقر بأن جميع البيانات الواردة في هذا الخطاب صحيحة، وأتحمل كامل المسؤولية ' +
       'عن أي معلومات خاطئة.';
 
     $('p2').textContent =
-
-'وذلك اعتباراً من بداية ' + TERM_LONG + ' وحتى نهاية الفصل بتاريخ ' + END + '، وبما يتناسب مع إمكانياتكم والتخصصات المتوفرة لديكم. ' +
-
-'كما نأمل من سعادتكم إشعارنا في حال قبول ' + w + ' للتدريب لديكم. ' +
-
-'شاكرين لكم كريم تعاونكم في تدريب طلاب وطالبات الكلية، ومتطلعين إلى استمرار التواصل والتعاون بما يخدم العملية التعليمية ويسهم في تحقيق أهدافها.';
-
+      'وذلك اعتباراً من بداية ' + TERM_LONG + ' إلى ' + END + '، وبما يتناسب مع إمكانياتكم ' +
+      'والتخصصات المتوفرة لديكم، كما نود من سعادتكم إشعارنا في حال قبول ' + w + ' للتدريب لديكم. ' +
+      'شاكرين لكم كريم تعاونكم في تدريب طلاب وطالبات الكلية ومتطلعين إلى دوام التواصل والتعاون بما ' +
+      'يخدم المصلحة التعليمية ويحقق أهدافها.';
 
     autofit();
     save();
@@ -398,12 +414,14 @@
   }
 
   var RULES = [
-    {id:'name',   label:'اسم الطالب'},
-    {id:'sid',    label:'الرقم الجامعي', test:function(v){ return /^[0-9]{6,12}$/.test(v); }, msg:'أرقام فقط'},
+    {id:'name',   label:'اسم الطالب',
+     test:function(v){ var n = v.split(/\s+/).filter(Boolean).length; return n >= 2 && n <= 5; },
+     msg:'من اسمين إلى خمسة أسماء'},
+    {id:'sid',    label:'الرقم الجامعي', test:function(v){ return /^44[0-9]{1,7}$/.test(v); }, msg:'يبدأ بـ 44 ولا يتجاوز 9 أرقام'},
     {id:'sec',    label:'رقم الشعبة',    test:function(v){ return /^[0-9]{1,8}$/.test(v); },  msg:'أرقام فقط'},
     {id:'college', label:'الكلية'},
     {id:'major',  label:'التخصص'},
-    {id:'mobile', label:'رقم الجوال',    test:function(v){ return /^05[0-9]{8}$/.test(v); },  msg:'يبدأ بـ 05 ويتكوّن من 10 أرقام'}
+    {id:'mobile', label:'رقم الجوال',    test:function(v){ return /^05[0-9]{8}$/.test(v); },  msg:'يبدأ بـ 05 ولا يتجاوز 10 أرقام'}
   ];
 
   function validate(mark){
@@ -418,6 +436,13 @@
         if (!first) first = el;
       }
     });
+    var ackOk = $('ackChk').checked;
+    if (mark) $('ackWrap').classList.toggle('err', !ackOk);
+    if (!ackOk){
+      problems.push('الإقرار (يجب الموافقة عليه)');
+      if (!first) first = $('ackChk');
+    }
+
     var box = $('errbox');
     if (mark && problems.length){
       box.innerHTML = 'أكمل الحقول التالية قبل التوليد:<br>• ' + problems.join('<br>• ');
@@ -430,9 +455,25 @@
     return {ok: !problems.length, first: first};
   }
 
+  var DIGITS = {sid:9, sec:8, mobile:10};
+  Object.keys(DIGITS).forEach(function(id){
+    $(id).addEventListener('input', function(){
+      var clean = this.value.replace(/[^0-9]/g, '').slice(0, DIGITS[id]);
+      if (clean !== this.value){
+        var atEnd = this.selectionStart === this.value.length;
+        this.value = clean;
+        if (atEnd) this.selectionStart = this.selectionEnd = clean.length;
+      }
+    });
+  });
+
   $('f').addEventListener('input', function(){ validate(false); });
   $('f').addEventListener('input', render);
   $('f').addEventListener('change', render);
+  $('ackChk').addEventListener('change', function(){
+    if (this.checked) $('ackWrap').classList.remove('err');
+    validate(false);
+  });
   RULES.forEach(function(r){
     var el = $(r.id);
     var clear = function(){
@@ -452,6 +493,8 @@
   $('reset').addEventListener('click', function(){
     FIELDS.forEach(function(k){ $(k).value = ''; });
     document.querySelector('input[name=g][value=n]').checked = true;
+    $('ackChk').checked = false;
+    $('ackWrap').classList.remove('err');
     RULES.forEach(function(r){
       var el = $(r.id);
       el.classList.remove('err');
