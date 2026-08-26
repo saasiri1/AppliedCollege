@@ -117,6 +117,7 @@
   .content p.tight{margin-bottom:3mm}
   .content .indent{text-indent:8mm}
   #p_org{display:flex;justify-content:space-between;align-items:baseline;gap:12mm}
+  #p_org > span:first-child{font-weight:700}
   .hon{font-weight:700;font-size:1.18em;white-space:nowrap;margin-inline-end:20mm}
 
   .tablewrap{padding-bottom:4mm}
@@ -128,7 +129,7 @@
   .info b{font-weight:700}
   .info .mail{direction:ltr;unicode-bidi:isolate;display:inline-block}
   .tail{font-size:.96em}
-  .ack{font-size:1.02em;font-weight:700;margin:4mm 0 0;text-align:justify}
+  .ack{font-size:.85em;font-weight:700;color:#c00000;margin:4mm 0 0;text-align:justify}
 
   /* خانة توقيع وحدة التدريب */
   .sign{
@@ -167,10 +168,10 @@
     <fieldset>
       <legend>بيانات الطالب</legend>
       <label for="org">اسم المؤسسة / الجهة <span style="color:var(--muted)">(اختياري — الافتراضي: إلى من يهمه الأمر)</span></label>
-      <input type="text" id="org" placeholder="مثال: شركة النموذج للتجارة">
+      <input type="text" id="org" placeholder="مثال: شركة النموذج للتجارة" maxlength="100">
 
       <label for="name">اسم الطالب / ـة <span class="req">*</span></label>
-      <input type="text" id="name" placeholder="مثال: محمد أحمد">
+      <input type="text" id="name" placeholder="مثال: محمد أحمد" maxlength="50">
 
       <div class="row">
         <div>
@@ -179,7 +180,7 @@
         </div>
         <div>
           <label for="sec">رقم الشعبة <span class="req">*</span></label>
-          <input type="text" id="sec" inputmode="numeric" maxlength="8" placeholder="مثال: 0000">
+          <input type="text" id="sec" inputmode="numeric" maxlength="4" placeholder="مثال: 0000">
         </div>
       </div>
 
@@ -302,8 +303,8 @@
   var STORE  = 'coopLetter.v3';
 
   /* بيانات التدريب الثابتة */
-  var TERM      = 'الفصل الأول 1447';
-  var TERM_LONG = 'الفصل الدراسي الأول 1447';
+  var TERM      = 'الفصل الأول 1448';
+  var TERM_LONG = 'الفصل الدراسي الأول 1448';
   var END       = '8 رجب 1448';
 
   function gender(){
@@ -362,11 +363,10 @@
       : '<span>السـادة/ إلى من يهمه الأمر</span>';
 
     $('p_ack').textContent =
-      'إقرار ' + w + ': أقر بأن جميع البيانات الواردة في هذا الخطاب صحيحة، وأتحمل كامل المسؤولية ' +
-      'عن أي معلومات خاطئة.';
+      'إقرار ' + w + ': أقر بأن مقرر التدريب الميداني مسجل في جدولي الدراسي، وأن جميع البيانات والمعلومات الواردة في هذا الخطاب صحيحة، وأتحمل كامل المسؤولية عن أي بيانات أو معلومات غير صحيحة.';
 
     $('p2').textContent =
-      'وذلك اعتباراً من بداية ' + TERM_LONG + ' إلى ' + END + '، وبما يتناسب مع إمكانياتكم ' +
+      'وذلك اعتباراً من بداية ' + TERM_LONG + ' وحتى نهاية الفصل بتاريخ ' + END + '، وبما يتناسب مع إمكانياتكم ' +
       'والتخصصات المتوفرة لديكم، كما نود من سعادتكم إشعارنا في حال قبول ' + w + ' للتدريب لديكم. ' +
       'شاكرين لكم كريم تعاونكم في تدريب طلاب وطالبات الكلية ومتطلعين إلى دوام التواصل والتعاون بما ' +
       'يخدم المصلحة التعليمية ويحقق أهدافها.';
