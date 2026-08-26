@@ -39,7 +39,13 @@
     width:100%;padding:8px 10px;border:1px solid #c9d1db;border-radius:8px;
     font:inherit;font-size:14px;background:#fff
   }
-  input[type=text]:focus{outline:2px solid #bcd8c9;border-color:var(--brand)}
+  select{
+    width:100%;padding:8px 10px;border:1px solid #c9d1db;border-radius:8px;
+    font:inherit;font-size:14px;background:#fff;color:var(--ink)
+  }
+  select:invalid,select.placeholder{color:#98a2ad}
+  input[type=text]:focus,select:focus{outline:2px solid #bcd8c9;border-color:var(--brand)}
+  select.err{border-color:#c0392b;background:#fff7f6}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
   .radios{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
   .radios label{
@@ -48,6 +54,17 @@
   }
   .radios input{display:none}
   .radios label:has(input:checked){background:var(--brand);border-color:var(--brand);color:#fff}
+  .auto{font-size:12.5px;color:var(--muted);margin:10px 0 0;background:#f5f7fa;
+        border:1px dashed var(--line);border-radius:8px;padding:7px 9px;direction:rtl}
+  .auto b{color:var(--ink);font-weight:700;direction:ltr;unicode-bidi:embed}
+  input.err{border-color:#c0392b;background:#fff7f6}
+  input.err:focus{outline:2px solid #f3c2bb}
+  .req{color:#c0392b}
+  .errbox{
+    display:none;background:#fdecea;border:1px solid #f5c6c0;color:#8f2418;
+    border-radius:8px;padding:9px 11px;font-size:12.5px;line-height:1.8;margin:0 0 10px
+  }
+  .errbox.show{display:block}
   .fixed{list-style:none;margin:0;padding:0;font-size:13px;line-height:2}
   .fixed li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:2px 0}
   .fixed li:last-child{border-bottom:0}
@@ -87,20 +104,30 @@
     position:absolute;
     top:52mm;right:22mm;left:22mm;bottom:22mm;
     display:flex;flex-direction:column;
-    font-size:14pt;line-height:1.95;text-align:justify;
+    font-size:14pt;line-height:1.9;text-align:justify;
   }
-  .content p{margin:0 0 5.5mm}
-  .content p.tight{margin-bottom:3.5mm}
+  .content p{margin:0 0 4.5mm}
+  .content p.tight{margin-bottom:3mm}
   .content .indent{text-indent:8mm}
 
-  .tablewrap{padding-bottom:6mm}
-  table{width:100%;border-collapse:collapse;font-size:13pt}
+  .tablewrap{padding-bottom:4mm}
+  table{width:100%;border-collapse:collapse;font-size:.93em}
   td{border:1px solid #000;padding:2.6mm 3mm;line-height:1.5;text-align:center}
   .head td{font-weight:700}
-  .vals td{height:14mm;vertical-align:middle}
+  .vals td{height:12mm;vertical-align:middle}
   .info td{text-align:right;white-space:nowrap}
   .info b{font-weight:700}
-  .tail{font-size:13.5pt}
+  .info .mail{direction:ltr;unicode-bidi:isolate;display:inline-block}
+  .tail{font-size:.96em}
+  .ack{font-size:.92em;border:1px solid #000;padding:2.5mm 3mm;margin:3mm 0 0;text-align:justify}
+
+  /* خانة توقيع وحدة التدريب */
+  .sign{
+    margin-top:auto;align-self:flex-end;width:70mm;
+    border:1px solid #000;padding:3mm 4mm 2.5mm;text-align:center;
+    font-size:.89em;line-height:1.7
+  }
+  .sign .t{font-weight:700;margin-bottom:12mm}
 
   /* ===== الطباعة ===== */
   @page{size:A4 portrait;margin:0}
@@ -129,29 +156,48 @@
 
     <fieldset>
       <legend>بيانات الطالب</legend>
-      <label for="name">اسم الطالب / ـة</label>
-      <input type="text" id="name" placeholder="مثال: محمد علي">
+      <label for="org">اسم المؤسسة / الجهة <span style="color:var(--muted)">(اختياري)</span></label>
+      <input type="text" id="org" placeholder="إن تُرك فارغاً: إلى من يهمه الأمر">
+
+      <label for="name">اسم الطالب / ـة <span class="req">*</span></label>
+      <input type="text" id="name" placeholder="مثال: محمد موسى">
 
       <div class="row">
         <div>
-          <label for="sid">الرقم الجامعي</label>
+          <label for="sid">الرقم الجامعي <span class="req">*</span></label>
           <input type="text" id="sid" inputmode="numeric" placeholder="441000000">
         </div>
         <div>
-          <label for="sec">رقم الشعبة</label>
+          <label for="sec">رقم الشعبة <span class="req">*</span></label>
           <input type="text" id="sec" inputmode="numeric" placeholder="مثال: 1234">
         </div>
       </div>
 
-      <label for="major">التخصص</label>
-      <input type="text" id="major" placeholder="مثال: مكافحة العدوى">
+      <label for="college">الكلية <span class="req">*</span></label>
+      <select id="college">
+        <option value="">— اختر الكلية —</option>
+        <option>الكلية التطبيقية المحالة (بنين)</option>
+        <option>الكلية التطبيقية المحالة (بنات)</option>
+        <option>الكلية التطبيقية أبها (بنات)</option>
+      </select>
 
-      <div class="row">
-        <div>
-          <label for="mobile">رقم الجوال</label>
-          <input type="text" id="mobile" inputmode="tel" placeholder="0508190003">
-        </div>
-      </div>
+      <label for="major">التخصص <span class="req">*</span></label>
+      <select id="major">
+        <option value="">— اختر التخصص —</option>
+        <option>نظم المعلومات</option>
+        <option>تطوير تطبيقات الويب والجوال</option>
+        <option>قانون أعمال</option>
+        <option>مساعد قانوني</option>
+        <option>محاسبة</option>
+        <option>تسويق إلكتروني</option>
+        <option>إدارة أعمال</option>
+        <option>إدارة المشاريع السياحية</option>
+      </select>
+
+      <label for="mobile">رقم الجوال <span class="req">*</span></label>
+      <input type="text" id="mobile" inputmode="tel" placeholder="0555555555">
+
+      <p class="auto">البريد الإلكتروني (يُبنى تلقائياً): <b id="emailPreview">—</b></p>
 
       <label>صيغة المخاطبة</label>
       <div class="radios" id="gender">
@@ -165,12 +211,12 @@
       <legend>بيانات التدريب (ثابتة)</legend>
       <ul class="fixed">
         <li><span>الفصل الدراسي</span><b>الفصل الأول 1447</b></li>
-        <li><span>تاريخ البداية</span><b>23 أغسطس 2026م</b></li>
-        <li><span>مدة التدريب</span><b>أربعة أشهر</b></li>
+        <li><span>فترة التدريب</span><b>من بداية الفصل إلى 8-7-1447</b></li>
       </ul>
     </fieldset>
 
     <div class="actions">
+      <div class="errbox" id="errbox"></div>
       <button type="button" id="pdf">توليد PDF</button>
       <button type="button" class="ghost" id="reset">تفريغ الحقول</button>
       <p class="hint">
@@ -186,8 +232,8 @@
       <div class="page" id="page">
         <div class="vp">وحدة التدريب</div>
 
-        <div class="content">
-          <p class="tight">السـادة/ إلى من يهمه الأمر</p>
+        <div class="content" id="content">
+          <p class="tight" id="p_org"></p>
           <p class="tight">تحية طيبة وبعد،</p>
 
           <p class="indent" id="p1"></p>
@@ -206,15 +252,24 @@
               </tr>
               <tr class="info">
                 <td id="v_mobile"></td>
-                <td id="v_contact" colspan="2"></td>
+                <td id="v_sec"></td>
+                <td id="v_email"></td>
+              </tr>
+              <tr class="info">
+                <td id="v_college" colspan="3"></td>
               </tr>
             </table>
           </div>
 
           <p id="p2"></p>
 
-          <p class="tail tight">مدة التدريب بالأشهر: أربعة أشهر</p>
           <p class="tail tight">الفصل الدراسي: الفصل الأول 1447</p>
+
+          <p class="ack" id="p_ack"></p>
+
+          <div class="sign">
+            <div class="t">وحدة التدريب بالكلية التطبيقية</div>
+          </div>
         </div>
       </div>
     </div>
@@ -224,13 +279,15 @@
 <script>
 (function(){
   var $ = function(id){ return document.getElementById(id); };
-  var FIELDS = ['name','sid','sec','major','mobile','email'];
+  var FIELDS = ['org','name','sid','sec','college','major','mobile'];
+  var MAILDOMAIN = '@kku.edu.sa';
   var STORE  = 'coopLetter.v3';
 
   /* بيانات التدريب الثابتة */
-  var TERM   = 'الفصل الأول 1447';
-  var START  = '23 أغسطس 2026م';
-  var MONTHS = 'أربعة أشهر';
+  var TERM      = 'الفصل الأول 1447';
+  var TERM_LONG = 'الفصل الدراسي الأول 1447';
+  /* ⁦ ... ⁩ لعزل اتجاه التاريخ حتى لا ينقلب داخل النص العربي */
+  var END       = '⁦' + '8-7-1447' + '⁩';
 
   function gender(){
     var r = document.querySelector('input[name=g]:checked');
@@ -240,6 +297,10 @@
     var g = gender();
     return g === 'm' ? 'الطالب' : (g === 'f' ? 'الطالبة' : 'الطالب/ـة');
   }
+  function email(){
+    var sid = $('sid').value.trim();
+    return sid ? sid + MAILDOMAIN : '';
+  }
   function val(id, dflt){ var v = $(id).value.trim(); return v || (dflt || ''); }
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g, function(c){
@@ -247,6 +308,16 @@
     });
   }
   function put(id, v){ $(id).innerHTML = v ? escapeHtml(v) : '&nbsp;'; }
+
+  function autofit(){
+    var c = $('content'), size = 14;
+    c.style.fontSize = size + 'pt';
+    var guard = 0;
+    while (c.scrollHeight > c.clientHeight + 1 && size > 11 && guard++ < 24){
+      size -= 0.25;
+      c.style.fontSize = size + 'pt';
+    }
+  }
 
   function render(){
     var w = who();
@@ -263,17 +334,25 @@
     put('v_major', val('major'));
 
     $('v_mobile').innerHTML = '<b>الجوال:</b> ' + escapeHtml(val('mobile'));
-    var sec = val('sec');
-    var contact = '<b>البريد الإلكتروني:</b> ' + escapeHtml(val('email'));
-    if (sec) contact = '<b>رقم الشعبة:</b> ' + escapeHtml(sec) + ' &nbsp;&nbsp;–&nbsp;&nbsp; ' + contact;
-    $('v_contact').innerHTML = contact;
+    $('v_sec').innerHTML    = '<b>رقم الشعبة:</b> ' + escapeHtml(val('sec'));
+    $('v_email').innerHTML  = '<b>البريد الإلكتروني:</b> <span class="mail">' + escapeHtml(email()) + '</span>';
+    $('v_college').innerHTML = '<b>الكلية:</b> ' + escapeHtml(val('college'));
+    $('emailPreview').textContent = email() || '—';
+
+    var org = val('org');
+    $('p_org').textContent = 'السـادة/ ' + (org ? org + ' المحترمين' : 'إلى من يهمه الأمر');
+
+    $('p_ack').textContent =
+      'إقرار ' + w + ': أقر بأن جميع البيانات الواردة في هذا الخطاب صحيحة، وأتحمل كامل المسؤولية ' +
+      'عن أي معلومات خاطئة.';
 
     $('p2').textContent =
-      'وذلك اعتباراً من تاريخ ' + START + ' ولمدة ' + MONTHS + ' خلال ' + TERM + '، وبما يتناسب مع ' +
-      'إمكانياتكم والتخصصات المتوفرة لديكم، كما نود من سعادتكم إشعارنا في حال قبول ' + w + ' للتدريب ' +
-      'لديكم. شاكرين لكم كريم تعاونكم في تدريب طلاب وطالبات الكلية ومتطلعين إلى دوام التواصل والتعاون ' +
-      'بما يخدم المصلحة التعليمية ويحقق أهدافها.';
+      'وذلك اعتباراً من بداية ' + TERM_LONG + ' إلى ' + END + '، وبما يتناسب مع إمكانياتكم ' +
+      'والتخصصات المتوفرة لديكم، كما نود من سعادتكم إشعارنا في حال قبول ' + w + ' للتدريب لديكم. ' +
+      'شاكرين لكم كريم تعاونكم في تدريب طلاب وطالبات الكلية ومتطلعين إلى دوام التواصل والتعاون بما ' +
+      'يخدم المصلحة التعليمية ويحقق أهدافها.';
 
+    autofit();
     save();
   }
 
@@ -315,13 +394,69 @@
     stage.style.marginBottom = (pg.offsetHeight * (s - 1)) + 'px';
   }
 
+  var RULES = [
+    {id:'name',   label:'اسم الطالب'},
+    {id:'sid',    label:'الرقم الجامعي', test:function(v){ return /^[0-9]{6,12}$/.test(v); }, msg:'أرقام فقط'},
+    {id:'sec',    label:'رقم الشعبة',    test:function(v){ return /^[0-9]{1,8}$/.test(v); },  msg:'أرقام فقط'},
+    {id:'college', label:'الكلية'},
+    {id:'major',  label:'التخصص'},
+    {id:'mobile', label:'رقم الجوال',    test:function(v){ return /^05[0-9]{8}$/.test(v); },  msg:'يبدأ بـ 05 ويتكوّن من 10 أرقام'}
+  ];
+
+  function validate(mark){
+    var problems = [], first = null;
+    RULES.forEach(function(r){
+      var el = $(r.id), v = el.value.trim(), bad = false, why = '';
+      if (!v){ bad = true; why = 'مطلوب'; }
+      else if (r.test && !r.test(v)){ bad = true; why = r.msg; }
+      if (mark) el.classList.toggle('err', bad);
+      if (bad){
+        problems.push(r.label + ' (' + why + ')');
+        if (!first) first = el;
+      }
+    });
+    var box = $('errbox');
+    if (mark && problems.length){
+      box.innerHTML = 'أكمل الحقول التالية قبل التوليد:<br>• ' + problems.join('<br>• ');
+      box.classList.add('show');
+    } else if (!problems.length){
+      box.classList.remove('show');
+      box.innerHTML = '';
+    }
+    $('pdf').style.opacity = problems.length ? '.75' : '1';
+    return {ok: !problems.length, first: first};
+  }
+
+  $('f').addEventListener('input', function(){ validate(false); });
   $('f').addEventListener('input', render);
   $('f').addEventListener('change', render);
-  $('pdf').addEventListener('click', function(){ render(); window.print(); });
+  RULES.forEach(function(r){
+    var el = $(r.id);
+    var clear = function(){
+      var v = this.value.trim();
+      if (v && (!r.test || r.test(v))) this.classList.remove('err');
+      if (this.tagName === 'SELECT') this.classList.toggle('placeholder', !v);
+    };
+    el.addEventListener('input', clear);
+    el.addEventListener('change', clear);
+  });
+  $('pdf').addEventListener('click', function(){
+    var r = validate(true);
+    if (!r.ok){ if (r.first) r.first.focus(); return; }
+    render();
+    window.print();
+  });
   $('reset').addEventListener('click', function(){
     FIELDS.forEach(function(k){ $(k).value = ''; });
     document.querySelector('input[name=g][value=n]').checked = true;
+    RULES.forEach(function(r){
+      var el = $(r.id);
+      el.classList.remove('err');
+      if (el.tagName === 'SELECT') el.classList.add('placeholder');
+    });
+    $('errbox').classList.remove('show');
     render();
+    validate(false);
     $('name').focus();
   });
   window.addEventListener('resize', fit);
@@ -329,6 +464,11 @@
   load();
   fromQuery();
   render();
+  validate(false);
+  RULES.forEach(function(r){
+    var el = $(r.id);
+    if (el.tagName === 'SELECT') el.classList.toggle('placeholder', !el.value);
+  });
   fit();
   $('name').focus();
 })();
